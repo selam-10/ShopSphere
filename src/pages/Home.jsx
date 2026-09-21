@@ -1,82 +1,61 @@
 import { Link } from "react-router-dom";
 
-function Categories() {
-  const categories = [
-    {
-      name: "Beauty",
-      value: "beauty",
-      description: "Beauty and personal care products.",
-    },
-    {
-      name: "Fragrances",
-      value: "fragrances",
-      description: "Perfumes and fragrances for every occasion.",
-    },
-    {
-      name: "Furniture",
-      value: "furniture",
-      description: "Furniture for your home and office.",
-    },
-    {
-      name: "Groceries",
-      value: "groceries",
-      description: "Everyday grocery products.",
-    },
-    {
-      name: "Laptops",
-      value: "laptops",
-      description: "Laptops and computer products.",
-    },
-    {
-      name: "Men's Shirts",
-      value: "mens-shirts",
-      description: "Stylish shirts for men.",
-    },
-    {
-      name: "Men's Shoes",
-      value: "mens-shoes",
-      description: "Shoes for men.",
-    },
-    {
-      name: "Women's Dresses",
-      value: "womens-dresses",
-      description: "Beautiful dresses for women.",
-    },
-    {
-      name: "Women's Shoes",
-      value: "womens-shoes",
-      description: "Stylish shoes for women.",
-    },
-  ];
-
+function Home() {
   return (
     <div>
-      <h1>Product Categories</h1>
+      <h2>Welcome to ShopSphere</h2>
 
       <p>
-        Browse ShopSphere products by category.
+        A simple online store for clothes, shoes, and bags.
       </p>
 
-      <div className="category-grid">
-        {categories.map((category) => (
-          <div
-            className="category-card"
-            key={category.value}
-          >
-            <h2>{category.name}</h2>
+      <p>
+        Browse our products, explore categories, and find
+        products that fit your style.
+      </p>
 
-            <p>{category.description}</p>
+      <Link to="/products">
+        Browse Products
+      </Link>
 
-            <Link
-              to={`/products?category=${category.value}`}
-            >
-              View Products
-            </Link>
-          </div>
-        ))}
+      <h3>Shop by Category</h3>
+
+      <div>
+        <section>
+          <h4>Clothes</h4>
+          <p>
+            Explore everyday clothing and stylish outfits.
+          </p>
+
+          <Link to="/products?category=clothes">
+            Shop Clothes
+          </Link>
+        </section>
+
+        <section>
+          <h4>Shoes</h4>
+          <p>
+            Find comfortable and stylish shoes.
+          </p>
+
+          <Link to="/products?category=shoes">
+            Shop Shoes
+          </Link>
+        </section>
+
+        <section>
+          <h4>Bags</h4>
+          <p>
+            Discover practical and stylish bags.
+          </p>
+
+          <Link to="/products?category=bags">
+            Shop Bags
+          </Link>
+        </section>
       </div>
     </div>
   );
 }
 
-export default Categories;
+export default Home;

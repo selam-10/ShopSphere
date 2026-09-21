@@ -1,142 +1,97 @@
-import { useEffect, useState } from "react";
-import {
-  useNavigate,
-  useParams,
-} from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 
-function ProductDetails({ onAddToCart }) {
+function ProductDetails() {
   const { id } = useParams();
-  const navigate = useNavigate();
 
-  const [product, setProduct] =
-    useState(null);
+  const products = [
+    {
+      id: 1,
+      name: "Classic T-Shirt",
+      category: "Clothes",
+      price: 800,
+      description:
+        "A comfortable everyday T-shirt that works well for casual outfits.",
+    },
+    {
+      id: 2,
+      name: "Casual Dress",
+      category: "Clothes",
+      price: 1500,
+      description:
+        "A simple and stylish casual dress for everyday occasions.",
+    },
+    {
+      id: 3,
+      name: "Running Shoes",
+      category: "Shoes",
+      price: 2200,
+      description:
+        "Comfortable shoes designed for everyday activities and exercise.",
+    },
+    {
+      id: 4,
+      name: "Classic Sneakers",
+      category: "Shoes",
+      price: 2500,
+      description:
+        "Stylish sneakers that are easy to combine with casual outfits.",
+    },
+    {
+      id: 5,
+      name: "Everyday Backpack",
+      category: "Bags",
+      price: 1800,
+      description:
+        "A practical backpack suitable for school, work, and everyday use.",
+    },
+    {
+      id: 6,
+      name: "Leather Handbag",
+      category: "Bags",
+      price: 3000,
+      description:
+        "A stylish handbag designed for everyday use.",
+    },
+  ];
 
-  const [loading, setLoading] =
-    useState(true);
+  const product = products.find(
+    (item) => item.id === Number(id)
+  );
 
-  const [error, setError] =
-    useState("");
-
-  useEffect(() => {
-    async function fetchProduct() {
-      try {
-        setLoading(true);
-        setError("");
-
-        const response = await fetch(
-          `https://dummyjson.com/products/${id}`
-        );
-
-        if (!response.ok) {
-          throw new Error(
-            "Product not found"
-          );
-        }
-
-        const data =
-          await response.json();
-
-        setProduct(data);
-      } catch (error) {
-        setError(
-          "Product not found."
-        );
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    fetchProduct();
-  }, [id]);
-
-  if (loading) {
+  if (!product) {
     return (
       <div>
-        <h1>Product Details</h1>
-        <p>Loading product...</p>
-      </div>
-    );
-  }
-
-  if (error || !product) {
-    return (
-      <div>
-        <h1>Product Not Found</h1>
-
+        <h2>Product Not Found</h2>
         <p>
-          The product you are looking for
-          does not exist.
+          The product you are looking for does not exist.
         </p>
 
-        <button
-          onClick={() =>
-            navigate("/products")
-          }
-        >
+        <Link to="/products">
           Back to Products
-        </button>
+        </Link>
       </div>
     );
-  }
-
-  function handleAddToCart() {
-    onAddToCart({
-      id: product.id,
-      name: product.title,
-      price: product.price,
-      category: product.category,
-      image: product.thumbnail,
-    });
   }
 
   return (
-    <div className="product-details">
-      <button
-        onClick={() => navigate(-1)}
-      >
-        ← Back
-      </button>
+    <div>
+      <Link to="/products">
+        ← Back to Products
+      </Link>
 
-      <h1>{product.title}</h1>
-
-      <img
-        src={product.thumbnail}
-        alt={product.title}
-        width="300"
-      />
-
-      <h2>
-        {product.price} ETB
-      </h2>
+      <h2>{product.name}</h2>
 
       <p>
-        <strong>Category:</strong>{" "}
-        {product.category}
+        Category: {product.category}
       </p>
 
       <p>
-        <strong>Rating:</strong>{" "}
-        ⭐ {product.rating}
+        Price: {product.price} ETB
       </p>
 
-      <p>
-        <strong>Description:</strong>{" "}
-        {product.description}
-      </p>
+      <p>{product.description}</p>
 
-      <p>
-        <strong>Brand:</strong>{" "}
-        {product.brand || "N/A"}
-      </p>
-
-      <p>
-        <strong>Stock:</strong>{" "}
-        {product.stock}
-      </p>
-
-      <button
-        onClick={handleAddToCart}
-      >
+      <button type="button">
         Add to Cart
       </button>
     </div>

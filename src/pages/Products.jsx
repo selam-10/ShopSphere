@@ -1,211 +1,107 @@
+import { Link, useSearchParams } from "react-router-dom";
 
-import { useEffect, useState } from "react";
-import { useSearchParams } from "react-router-dom";
-import ProductCard from "../components/ProductCard";
+function Products() {
+  const [searchParams] = useSearchParams();
+  const category = searchParams.get("category");
 
-function Products({ onAddToCart }) {
-  const [products, setProducts] = useState([]);
-  const [searchParams, setSearchParams] = useSearchParams();
+  const products = [
+    {
+      id: 1,
+      name: "Classic T-Shirt",
+      category: "clothes",
+      price: 800,
+      description: "A comfortable everyday T-shirt.",
+    },
+    {
+      id: 2,
+      name: "Casual Dress",
+      category: "clothes",
+      price: 1500,
+      description: "A simple and stylish casual dress.",
+    },
+    {
+      id: 3,
+      name: "Running Shoes",
+      category: "shoes",
+      price: 2200,
+      description: "Comfortable shoes for everyday activities.",
+    },
+    {
+      id: 4,
+      name: "Classic Sneakers",
+      category: "shoes",
+      price: 2500,
+      description: "Stylish sneakers for casual outfits.",
+    },
+    {
+      id: 5,
+      name: "Everyday Backpack",
+      category: "bags",
+      price: 1800,
+      description: "A practical bag for school and everyday use.",
+    },
+    {
+      id: 6,
+      name: "Leather Handbag",
+      category: "bags",
+      price: 3000,
+      description: "A stylish handbag for everyday use.",
+    },
+  ];
 
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
-
-  const [search, setSearch] = useState("");
-  const [sort, setSort] = useState("");
-
-  const selectedCategory = searchParams.get("category") || "All";
-
-  useEffect(() => {
-    async function fetchProducts() {
-      try {
-        setLoading(true);
-        setError("");
-
-        const response = await fetch(
-          "https://dummyjson.com/products?limit=30"
-        );
-
-        if (!response.ok) {
-          throw new Error("Failed to fetch products");
-        }
-
-        const data = await response.json();
-
-        setProducts(data.products);
-      } catch (error) {
-        setError("Failed to load products. Please try again.");
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    fetchProducts();
-  }, []);
-
-  function handleCategory(category) {
-    if (category === "All") {
-      setSearchParams({});
-    } else {
-      setSearchParams({ category });
-    }
-  }
-
-  let filteredProducts = products.filter((product) => {
-    const matchesSearch = product.title
-      .toLowerCase()
-      .includes(search.toLowerCase());
-
-    const matchesCategory =
-      selectedCategory === "All" ||
-      product.category === selectedCategory;
-
-    return matchesSearch && matchesCategory;
-  });
-
-  if (sort === "low") {
-    filteredProducts = [...filteredProducts].sort(
-      (a, b) => a.price - b.price
-    );
-  }
-
-  if (sort === "high") {
-    filteredProducts = [...filteredProducts].sort(
-      (a, b) => b.price - a.price
-    );
-  }
-
-  if (loading) {
-    return (
-      <div>
-        <h1>Products</h1>
-        <p>Loading products...</p>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div>
-        <h1>Products</h1>
-        <p>{error}</p>
-      </div>
-    );
-  }
+  const filteredProducts = category
+    ? products.filter(
+        (product) => product.category === category
+      )
+    : products;
 
   return (
     <div>
-      <h1>Products</h1>
+      <h2>ShopSphere Products</h2>
 
-      <p>
-        Browse our products and find something you love.
-      </p>
+      {category && (
+        <p>
+          Showing products in: <strong>{category}</strong>
+        </p>
+      )}
 
-      <div>
-        <label htmlFor="search">
-          Search Products
-        </label>
-
-        <br />
-
-        <input
-          id="search"
-          type="text"
-          placeholder="Search products..."
-          value={search}
-          onChange={(event) => setSearch(event.target.value)}
-        />
-      </div>
-
-      <br />
+      {!category && (
+        <p>
+          Browse our clothes, shoes, and bags.
+        </p>
+      )}
 
       <div>
-        <strong>Category:</strong>{" "}
+        {filteredProducts.map((product) => (
+          <article key={product.id}>
+            <h3>{product.name}</h3>
 
-        <button onClick={() => handleCategory("All")}>
-          All
-        </button>
+            <p>
+              Category: {product.category}
+            </p>
 
-        <button onClick={() => handleCategory("beauty")}>
-          Beauty
-        </button>
+            <p>
+              {product.description}
+            </p>
 
-        <button onClick={() => handleCategory("fragrances")}>
-          Fragrances
-        </button>
+            <p>
+              Price: {product.price} ETB
+            </p>
 
-        <button onClick={() => handleCategory("furniture")}>
-          Furniture
-        </button>
-
-        <button onClick={() => handleCategory("groceries")}>
-          Groceries
-        </button>
-
-        <button onClick={() => handleCategory("laptops")}>
-          Laptops
-        </button>
-
-        <button onClick={() => handleCategory("mens-shirts")}>
-          Men's Shirts
-        </button>
-
-        <button onClick={() => handleCategory("mens-shoes")}>
-          Men's Shoes
-        </button>
-
-        <button onClick={() => handleCategory("womens-dresses")}>
-          Women's Dresses
-        </button>
-
-        <button onClick={() => handleCategory("womens-shoes")}>
-          Women's Shoes
-        </button>
+            <Link to={`/products/${product.id}`}>
+              View Details
+            </Link>
+          </article>
+        ))}
       </div>
 
-      <br />
-
-      <div>
-        <label htmlFor="sort">
-          Sort:
-        </label>{" "}
-
-        <select
-          id="sort"
-          value={sort}
-          onChange={(event) => setSort(event.target.value)}
-        >
-          <option value="">Default</option>
-          <option value="low">
-            Price Low → High
-          </option>
-          <option value="high">
-            Price High → Low
-          </option>
-        </select>
-      </div>
-
-      <br />
-
-      <p>
-        Showing {filteredProducts.length} product(s)
-      </p>
-
-      <div className="product-grid">
-        {filteredProducts.length === 0 ? (
-          <p>No products found.</p>
-        ) : (
-          filteredProducts.map((product) => (
-            <ProductCard
-              key={product.id}
-              product={product}
-              onAddToCart={onAddToCart}
-            />
-          ))
-        )}
-      </div>
+      {filteredProducts.length === 0 && (
+        <p>
+          No products found in this category.
+        </p>
+      )}
     </div>
   );
 }
 
 export default Products;
-
